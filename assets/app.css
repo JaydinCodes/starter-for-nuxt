@@ -17,3 +17,27 @@ summary::-webkit-details-marker {
   z-index: -1;
   background-position-x: center;
 }
+
+:root{
+  --brand-purple: 124 58 237; /* purple-600 style */
+  --brand-yellow: 250 204 21; /* yellow-400 style */
+  --brand-white: 255 255 255;
+  --ink: 15 23 42;            /* slate-900 */
+  --muted: 100 116 139;       /* slate-500 */
+}
+
+.container-x {
+  @apply mx-auto max-w-6xl px-6;
+}
+
+.card-premium {
+  @apply rounded-2xl border bg-white/90 shadow-sm backdrop-blur;
+}
+
+.section-title {
+  @apply text-3xl font-semibold tracking-tight text-slate-900;
+}
+
+.section-subtitle {
+  @apply mt-2 text-slate-500;
+}
