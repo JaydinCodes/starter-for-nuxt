@@ -1,5 +1,3 @@
-import tailwindcss from "@tailwindcss/vite";
-
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -17,7 +15,11 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
 
-  css: ["@/assets/app.css", "@appwrite.io/pink-icons"],
+  modules: ['@nuxt/ui', '@nuxtjs/tailwindcss'],
+  css: ["~/assets/app.css", "@appwrite.io/pink-icons"],
+  tailwindcss: {
+    exposeConfig: true,
+  },
 
   app: {
     head: {
@@ -40,9 +42,5 @@ export default defineNuxtConfig({
         },
       ],
     },
-  },
-
-  vite: {
-    plugins: [tailwindcss()],
   },
 });

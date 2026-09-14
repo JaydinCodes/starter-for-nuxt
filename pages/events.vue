@@ -2,46 +2,51 @@
 import { Query } from 'appwrite'
 import { useAppwrite } from '~/lib/appwrite'
 
+useSeoMeta({
+  title: 'Events | Westridge Baptist Church',
+  description: 'Upcoming gatherings and church calendar for Westridge Baptist Church.',
+})
+
 const config = useRuntimeConfig()
 const { databases } = useAppwrite()
 
-const { data: events, pending, error } = await useAsyncData('events', async () => {
+const { data, pending, error } = await useAsyncData('events', async () => {
   const res = await databases.listDocuments(
     config.public.appwriteDatabaseId,
     config.public.colEvents,
-    [
-      Query.equal('published', true),
-      Query.orderAsc('startAt'),
-      Query.limit(50),
-    ]
+    [Query.equal('published', true), Query.orderAsc('startAt'), Query.limit(50)]
   )
   return res.documents
 })
+
+const formatDate = (iso: string) => new Date(iso).toLocaleString()
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl p-6">
-    <div class="mb-6">
-      <h1 class="text-3xl font-semibold">Events</h1>
-      <p class="text-muted-foreground">Upcoming gatherings and church calendar.</p>
-    </div>
+  <div class="container-x">
+    <SectionHeader title="Events" subtitle="Upcoming gatherings and church calendar." />
 
-    <div v-if="pending">Loading…</div>
-    <div v-else-if="error">Failed to load events.</div>
+    <div class="mt-6">
+      <div v-if="pending" class="card-premium p-6">Loading…</div>
 
-    <div v-else class="space-y-4">
-      <UCard v-for="e in events" :key="e.$id">
-        <template #header>
-          <div class="flex items-start justify-between gap-4">
-            <h2 class="text-lg font-semibold">{{ e.title }}</h2>
-            <span class="text-sm text-muted-foreground">{{ new Date(e.startAt).toLocaleString() }}</span>
+      <div v-else-if="error">
+        <EmptyState title="Couldn’t load events" description="Check Appwrite permissions and collection IDs." action-label="Go home" action-to="/" />
+      </div>
+
+      <div v-else-if="!data?.length">
+        <EmptyState title="No upcoming events" description="Add events in Appwrite and they’ll appear here automatically." action-label="View announcements" action-to="/announcements" />
+      </div>
+
+      <div v-else class="grid gap-4 lg:grid-cols-2">
+        <InfoCard v-for="e in data" :key="e.$id" :title="e.title" eyebrow="Event">
+          <div class="space-y-2">
+            <p class="text-sm text-slate-700"><span class="font-medium">When:</span> {{ formatDate(e.startAt) }}</p>
+            <p v-if="e.location" class="text-sm text-slate-700"><span class="font-medium">Where:</span> {{ e.location }}</p>
+            <p v-if="e.description" class="whitespace-pre-wrap">{{ e.description }}</p>
+            <NuxtLink v-if="e.link" :to="e.link" class="link-brand text-sm">More info →</NuxtLink>
           </div>
-        </template>
-
-        <p v-if="e.description" class="whitespace-pre-wrap">{{ e.description }}</p>
-        <p v-if="e.location" class="mt-2 text-sm text-muted-foreground">📍 {{ e.location }}</p>
-        <NuxtLink v-if="e.link" :to="e.link" class="mt-2 inline-block underline">More info</NuxtLink>
-      </UCard>
+        </InfoCard>
+      </div>
     </div>
   </div>
 </template>

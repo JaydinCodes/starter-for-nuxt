@@ -1,6 +1,6 @@
 import { Client, Databases, Storage } from 'appwrite'
 
-export function useAppwrite() {
+export const useAppwrite = () => {
   const config = useRuntimeConfig()
 
   const client = new Client()

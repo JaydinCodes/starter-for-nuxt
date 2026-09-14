@@ -1,10 +1,5 @@
 <script setup lang="ts">
-defineProps<{
-  title: string
-  description?: string
-  actionLabel?: string
-  actionTo?: string
-}>()
+defineProps<{ title: string; description?: string; actionLabel?: string; actionTo?: string }>()
 </script>
 
 <template>
@@ -22,13 +17,9 @@ defineProps<{
     </p>
 
     <div v-if="actionLabel && actionTo" class="mt-6">
-      <UButton
-        :to="actionTo"
-        class="rounded-xl"
-        :style="{ backgroundColor: `rgb(var(--brand-purple))`, color: 'white' }"
-      >
+      <NuxtLink :to="actionTo" class="btn-brand inline-flex items-center justify-center">
         {{ actionLabel }}
-      </UButton>
+      </NuxtLink>
     </div>
   </div>
 </template>
