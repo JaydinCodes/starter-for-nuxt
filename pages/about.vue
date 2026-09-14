@@ -25,7 +25,7 @@ useSeoMeta({
 
         <InfoCard title="Service times" eyebrow="Visit">
           <ul class="list-disc pl-5">
-            <li>Sunday Service: 10:00</li>
+            <li>Sunday Service: 09:00</li>
             <li>Bible Study: (add schedule)</li>
             <li>Youth: (add schedule)</li>
           </ul>

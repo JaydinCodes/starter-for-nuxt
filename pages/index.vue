@@ -80,7 +80,7 @@ const featuredDepartments = computed(() =>
           </div>
 
           <div class="mt-6 flex flex-wrap gap-3 text-sm text-white/80">
-            <span class="rounded-full bg-white/10 px-3 py-1">Sundays • 10:00</span>
+            <span class="rounded-full bg-white/10 px-3 py-1">Sundays • 09:00</span>
             <span class="rounded-full bg-white/10 px-3 py-1">Mitchells Plain</span>
             <span class="rounded-full bg-white/10 px-3 py-1">All welcome</span>
           </div>
