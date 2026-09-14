@@ -3,19 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --paper: 246 242 233;
-  --paper-light: 251 249 244;
+  --plum: 59 22 56;
+  --gold: 227 167 39;
 
-  --ink: 24 32 28;
-  --muted: 105 113 104;
+  --paper: 247 242 232;
+  --paper-light: 252 250 245;
 
-  --forest: 38 59 49;
-  --forest-light: 80 102 87;
+  --ink: 33 28 32;
+  --muted: 117 107 115;
 
-  --gold: 176 138 69;
+  --line: 220 211 215;
 
-  --line: 217 212 200;
-  --white: 255 255 255;
+  --forest: 59 22 56;
 }
 
 html,
@@ -186,4 +185,30 @@ body {
 .soft-divider {
   height: 1px;
   background: rgb(var(--line));
+}
+
+.font-display {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.18em];
+  color: rgb(var(--muted));
+}
+
+.editorial-link {
+  @apply inline-flex items-center gap-2 text-sm font-semibold transition;
+  color: rgb(var(--plum));
+}
+
+.editorial-link:hover {
+  color: rgb(var(--gold));
+}
+
+.editorial-image {
+  @apply relative overflow-hidden;
+}
+
+.editorial-image img {
+  @apply h-full w-full object-cover;
 }
