@@ -4,134 +4,176 @@ import { ref } from 'vue'
 const route = useRoute()
 
 const links = [
-  { label: 'About', to: '/about' },
-  { label: 'Departments', to: '/departments' },
-  { label: 'Announcements', to: '/announcements' },
-  { label: 'Events', to: '/events' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'The Church', to: '/about' },
+  { label: 'Communities', to: '/departments' },
+  { label: 'This Week', to: '/events' },
+  { label: 'Stories', to: '/announcements' },
+  { label: 'Visit', to: '/contact' },
 ]
-
-const isActive = (to: string) => route.path === to
 
 const isMobileNavOpen = ref(false)
 
-const toggleMobileNav = () => {
-  isMobileNavOpen.value = !isMobileNavOpen.value
-}
+const isActive = (to: string) => route.path === to
 
 watch(
   () => route.path,
   () => {
-    // close menu on navigation so it never stays open
     isMobileNavOpen.value = false
-  }
+  },
 )
 </script>
 
 <template>
-  <div class="min-h-screen bg-hero">
-    <!-- ambient glow -->
-    <div class="pointer-events-none fixed inset-x-0 -top-24 h-72 blur-3xl opacity-30"
-         style="background: radial-gradient(closest-side, rgb(var(--brand-purple)) 0%, transparent 70%);">
-    </div>
+  <div class="min-h-screen bg-[rgb(var(--paper))] text-[rgb(var(--ink))]">
 
-    <header class="sticky top-0 z-50 border-b border-slate-200/60 glass-top">
-      <div class="container-x flex h-16 items-center justify-between">
+    <header class="sticky top-0 z-50 border-b border-[rgb(var(--line))] bg-[rgba(246,242,233,0.94)] backdrop-blur-md">
+      <div class="container-x flex h-20 items-center justify-between">
+
+        <!-- Brand -->
         <NuxtLink to="/" class="flex items-center gap-3">
-          <img src="/logo.svg" alt="Westridge Baptist" class="h-9 w-9" />
-          <div class="leading-tight">
-            <div class="font-semibold tracking-tight text-slate-900">Westridge</div>
-            <div class="text-xs text-slate-500 -mt-0.5">Baptist Church</div>
+          <img
+            src="/logo.svg"
+            alt="Westridge Baptist Church"
+            class="h-9 w-9"
+          />
+
+          <div class="leading-none">
+            <div class="font-display text-xl">
+              Westridge
+            </div>
+
+            <div class="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[rgb(var(--muted))]">
+              Baptist Church
+            </div>
           </div>
         </NuxtLink>
 
-        <!-- Desktop nav -->
-        <nav class="hidden items-center gap-6 md:flex">
+        <!-- Desktop navigation -->
+        <nav class="hidden items-center gap-8 md:flex">
           <NuxtLink
-            v-for="l in links"
-            :key="l.to"
-            :to="l.to"
+            v-for="link in links"
+            :key="link.to"
+            :to="link.to"
             class="relative text-sm transition"
-            :class="isActive(l.to) ? 'text-slate-900 font-medium' : 'text-slate-500 hover:text-slate-900'"
+            :class="
+              isActive(link.to)
+                ? 'text-[rgb(var(--forest))]'
+                : 'text-[rgb(var(--muted))] hover:text-[rgb(var(--ink))]'
+            "
           >
-            {{ l.label }}
+            {{ link.label }}
+
             <span
-              v-if="isActive(l.to)"
-              class="absolute -bottom-2 left-0 h-[2px] w-full rounded-full"
-              :style="{ backgroundColor: 'rgb(var(--brand-yellow))' }"
+              v-if="isActive(link.to)"
+              class="absolute -bottom-2 left-0 h-px w-full bg-[rgb(var(--gold))]"
             />
           </NuxtLink>
         </nav>
 
-        <!-- Right side -->
-        <div class="flex items-center gap-3">
-          <NuxtLink to="/announcements" class="btn-brand hidden xs:inline-flex">
-            Latest Updates
-          </NuxtLink>
+        <!-- Desktop CTA -->
+        <NuxtLink
+          to="/contact"
+          class="btn-primary hidden md:inline-flex"
+        >
+          Visit us
+        </NuxtLink>
 
-          <!-- Mobile menu button -->
-          <button
-            type="button"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
-            @click="toggleMobileNav"
-            aria-label="Toggle navigation"
-          >
-            <span v-if="!isMobileNavOpen" class="i-lucide-menu h-4 w-4">
-              <span class="block h-0.5 w-4 rounded bg-slate-700"></span>
-              <span class="mt-1 block h-0.5 w-4 rounded bg-slate-700"></span>
-              <span class="mt-1 block h-0.5 w-4 rounded bg-slate-700"></span>
-            </span>
-            <span v-else class="i-lucide-x h-4 w-4 relative">
-              <span class="block h-0.5 w-4 rotate-45 rounded bg-slate-700"></span>
-              <span class="-mt-0.5 block h-0.5 w-4 -rotate-45 rounded bg-slate-700"></span>
-            </span>
-          </button>
-        </div>
+        <!-- Mobile -->
+        <button
+          type="button"
+          class="flex h-10 w-10 items-center justify-center border border-[rgb(var(--line))] md:hidden"
+          aria-label="Toggle navigation"
+          @click="isMobileNavOpen = !isMobileNavOpen"
+        >
+          <span class="text-lg">
+            {{ isMobileNavOpen ? '×' : '☰' }}
+          </span>
+        </button>
       </div>
 
-      <!-- Mobile nav panel -->
+      <!-- Mobile navigation -->
       <div
         v-if="isMobileNavOpen"
-        class="border-t border-slate-200/70 bg-white/95 backdrop-blur md:hidden"
+        class="border-t border-[rgb(var(--line))] bg-[rgb(var(--paper))] md:hidden"
       >
-        <div class="container-x py-3">
-          <nav class="flex flex-col gap-1">
-            <NuxtLink
-              v-for="l in links"
-              :key="l.to"
-              :to="l.to"
-              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm"
-              :class="isActive(l.to) ? 'bg-slate-100 text-slate-900 font-medium' : 'text-slate-600 hover:bg-slate-50'"
-            >
-              <span>{{ l.label }}</span>
-            </NuxtLink>
-            <NuxtLink
-              to="/announcements"
-              class="mt-2 inline-flex items-center justify-center rounded-xl bg-[rgb(var(--brand-purple))] px-3 py-2 text-sm font-medium text-white shadow-sm"
-            >
-              Latest Updates
-            </NuxtLink>
-          </nav>
-        </div>
+        <nav class="container-x flex flex-col py-4">
+          <NuxtLink
+            v-for="link in links"
+            :key="link.to"
+            :to="link.to"
+            class="border-b border-[rgb(var(--line))] py-4 text-sm"
+          >
+            {{ link.label }}
+          </NuxtLink>
+
+          <NuxtLink
+            to="/contact"
+            class="btn-primary mt-4"
+          >
+            Visit us
+          </NuxtLink>
+        </nav>
       </div>
     </header>
 
-    <main class="py-10">
+    <main>
       <NuxtPage />
     </main>
 
-    <div class="soft-divider"></div>
+    <footer class="border-t border-[rgb(var(--line))] bg-[rgb(var(--forest))] text-white">
+      <div class="container-x py-14">
 
-    <footer class="bg-white/60">
-      <div class="container-x py-10 text-sm text-slate-500">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {{ new Date().getFullYear() }} Westridge Baptist Church</p>
-          <div class="flex gap-5">
-            <NuxtLink class="hover:text-slate-900" to="/about">About</NuxtLink>
-            <NuxtLink class="hover:text-slate-900" to="/contact">Contact</NuxtLink>
+        <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+
+          <div class="lg:col-span-2">
+            <p class="font-display text-3xl">
+              Westridge Baptist Church
+            </p>
+
+            <p class="mt-4 max-w-md text-sm leading-relaxed text-white/60">
+              A people gathered around Christ.
+              Worshipping, growing, serving and sharing life together.
+            </p>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
+              Explore
+            </p>
+
+            <nav class="mt-4 flex flex-col gap-3 text-sm text-white/70">
+              <NuxtLink to="/about">The Church</NuxtLink>
+              <NuxtLink to="/departments">Communities</NuxtLink>
+              <NuxtLink to="/events">This Week</NuxtLink>
+              <NuxtLink to="/announcements">Stories</NuxtLink>
+            </nav>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
+              Visit
+            </p>
+
+            <div class="mt-4 space-y-3 text-sm text-white/70">
+              <p>Sunday · 09:00</p>
+              <p>Mitchells Plain</p>
+
+              <NuxtLink
+                to="/contact"
+                class="inline-block text-white underline underline-offset-4"
+              >
+                Get in touch
+              </NuxtLink>
+            </div>
           </div>
         </div>
+
+        <div class="mt-14 border-t border-white/15 pt-6 text-xs text-white/40">
+          © {{ new Date().getFullYear() }} Westridge Baptist Church
+        </div>
+
       </div>
     </footer>
+
   </div>
 </template>

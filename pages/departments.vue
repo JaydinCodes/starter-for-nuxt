@@ -1,109 +1,154 @@
 <script setup lang="ts">
-import { Query } from 'appwrite'
-import { useAppwrite } from '~/lib/appwrite'
 import { computed } from 'vue'
+import { Query } from 'appwrite'
+
+import { useAppwrite } from '~/lib/appwrite'
 import { getDepartmentMetaByName } from '~/lib/departments'
 
 useSeoMeta({
-  title: 'Departments | Westridge Baptist Church',
-  description: 'Explore departments at Westridge Baptist Church and find where you can serve and connect.',
+  title: 'Communities | Westridge Baptist Church',
+  description:
+    'Find a community at Westridge Baptist Church where you can connect, grow and serve.',
 })
 
 const config = useRuntimeConfig()
 const { databases } = useAppwrite()
 
-const { data, pending, error } = await useAsyncData('departments', async () => {
-  const res = await databases.listDocuments(
-    config.public.appwriteDatabaseId,
-    config.public.colDepartments,
-    [Query.orderAsc('name'), Query.limit(100)]
-  )
-  return res.documents
-})
+const { data, pending, error } = await useAsyncData(
+  'departments',
+  async () => {
+    const res = await databases.listDocuments(
+      config.public.appwriteDatabaseId,
+      config.public.colDepartments,
+      [
+        Query.orderAsc('name'),
+        Query.limit(100),
+      ],
+    )
 
-const themedDepartments = computed(() =>
-  (data.value ?? []).map((d: any) => ({
-    ...d,
-    __meta: getDepartmentMetaByName(d.name),
-  }))
+    return res.documents
+  },
+)
+
+const communities = computed(() =>
+  (data.value ?? []).map((department: any) => ({
+    ...department,
+    __meta: getDepartmentMetaByName(department.name),
+  })),
 )
 </script>
 
 <template>
-  <div class="container-x">
-    <SectionHeader
-      title="Departments"
-      subtitle="Each department has its own flavour, focus, and family. Find a space that feels like home."
-    />
+  <div>
 
-    <div class="mt-6">
-      <div v-if="pending" class="card-premium p-6">Loading…</div>
+    <!-- HEADER -->
+    <section class="container-x pt-12 sm:pt-16 lg:pt-20">
 
-      <div v-else-if="error">
-        <EmptyState
-          title="Couldn’t load departments"
-          description="Check Appwrite permissions and collection IDs."
-          action-label="Go home"
-          action-to="/"
-        />
+      <p class="eyebrow">
+        Our communities
+      </p>
+
+      <h1 class="editorial-heading mt-4">
+        There is a place
+        <br />
+        for you here.
+      </h1>
+
+      <p class="mt-7 max-w-2xl text-lg leading-relaxed text-[rgb(var(--muted))]">
+        Church life happens in community. Find people to worship with,
+        learn with, serve with and grow alongside.
+      </p>
+
+    </section>
+
+    <!-- COMMUNITIES -->
+    <section class="container-x py-20 sm:py-28">
+
+      <div
+        v-if="pending"
+        class="text-sm text-[rgb(var(--muted))]"
+      >
+        Loading communities...
       </div>
 
-      <div v-else-if="!data?.length">
-        <EmptyState
-          title="No departments yet"
-          description="Add departments in Appwrite and they’ll appear here automatically."
-          action-label="View announcements"
-          action-to="/announcements"
-        />
-      </div>
+      <EmptyState
+        v-else-if="error"
+        title="Couldn't load communities"
+        description="Check Appwrite permissions and collection IDs."
+        action-label="Go home"
+        action-to="/"
+      />
 
-      <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <InfoCard
-          v-for="d in themedDepartments"
-          :key="d.$id"
-          :title="d.name"
-          eyebrow="Department"
-          :right-tag="d.__meta?.shortName"
-          :accent-color="d.__meta?.accentColor"
+      <EmptyState
+        v-else-if="!data?.length"
+        title="No communities yet"
+        description="Communities will appear here when they are added."
+        action-label="Go home"
+        action-to="/"
+      />
+
+      <div
+        v-else
+        class="border-t border-[rgb(var(--line))]"
+      >
+
+        <NuxtLink
+          v-for="community in communities"
+          :key="community.$id"
+          :to="
+            community.__meta
+              ? `/departments/${community.__meta.slug}`
+              : '/departments'
+          "
+          class="group grid gap-5 border-b border-[rgb(var(--line))] py-8 transition hover:bg-[rgb(var(--paper-light))] sm:grid-cols-[180px_1fr_160px]"
         >
-          <p class="line-clamp-3">
-            {{ d.summary || d.__meta?.tagline }}
-          </p>
 
-          <template #footer>
-            <div class="space-y-2 text-sm text-slate-600">
-              <p v-if="d.__meta?.tagline" class="text-xs font-medium text-slate-500">
-                {{ d.__meta.tagline }}
-              </p>
+          <div>
+            <p class="eyebrow">
+              Community
+            </p>
 
-              <p v-if="d.leaderName">
-                <span class="font-medium">Leader:</span>
-                {{ d.leaderName }}
-              </p>
+            <p
+              v-if="community.__meta?.shortName"
+              class="mt-2 text-xs text-[rgb(var(--muted))]"
+            >
+              {{ community.__meta.shortName }}
+            </p>
+          </div>
 
-              <p v-if="d.meetingInfo">
-                <span class="font-medium">Meet:</span>
-                {{ d.meetingInfo }}
-              </p>
+          <div>
+            <h2 class="font-display text-4xl leading-tight">
+              {{ community.name }}
+            </h2>
 
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                <NuxtLink
-                  v-if="d.__meta"
-                  :to="`/departments/${d.__meta.slug}`"
-                  class="inline-flex items-center gap-1 text-sm font-medium text-slate-900"
-                >
-                  Learn more
-                  <span aria-hidden="true">→</span>
-                </NuxtLink>
+            <p class="mt-3 max-w-2xl leading-relaxed text-[rgb(var(--muted))]">
+              {{ community.summary || community.__meta?.tagline }}
+            </p>
 
-                <NuxtLink to="/contact" class="link-brand text-sm">
-                  Get involved
-                </NuxtLink>
-              </div>
+            <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[rgb(var(--muted))]">
+              <span v-if="community.leaderName">
+                Led by {{ community.leaderName }}
+              </span>
+
+              <span v-if="community.meetingInfo">
+                {{ community.meetingInfo }}
+              </span>
             </div>
-          </template>
-        </InfoCard>
+          </div>
+
+          <div class="flex items-center sm:justify-end">
+            <span class="editorial-link">
+              Explore
+              <span class="transition group-hover:translate-x-1">
+                →
+              </span>
+            </span>
+          </div>
+
+        </NuxtLink>
+
       </div>
-    </div>
+    </section>
+
   </div>
 </template>
